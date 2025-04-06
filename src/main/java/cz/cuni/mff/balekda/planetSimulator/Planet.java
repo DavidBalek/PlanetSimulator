@@ -1,5 +1,9 @@
 package cz.cuni.mff.balekda.planetSimulator;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  *
  * @author David Balek
@@ -55,5 +59,27 @@ public record Planet(
     double time
 )
 {
+    public static Planet createPlanetFromString(String source){
+        double semiMajorAxis = 0;
+        double eccentricity = 0;
+        double inclination = 0;
+        double argumentPerihelion = 0;
+        double longitudeNode = 0;
+        double meanAnomaly = 0;
+        double time = 0;
+        return new Planet(
+                    semiMajorAxis,
+                    eccentricity,
+                    inclination,
+                    argumentPerihelion,
+                    longitudeNode,
+                    meanAnomaly,
+                    time);
+    }
     
+    public static Planet creatPlanetFromFile(String fileName) throws IOException{
+        String content = Files.readString(Paths.get(fileName));
+        return createPlanetFromString(content);
+    }
+        
 }
