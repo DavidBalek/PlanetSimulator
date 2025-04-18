@@ -16,7 +16,7 @@ import java.nio.file.Paths;
  * These parameters are used for orbital calculations, such as determining the
  * orbital period of the planet.
  */
-public record Planet(
+public record PlanetKeplerian(
     /**
      * The semi-major axis of the planet's orbit in m.
      * This represents the average distance between the planet and the Sun.
@@ -59,7 +59,7 @@ public record Planet(
     double time
 )
 {
-    public static Planet createPlanetFromString(String source){
+    public static PlanetKeplerian createPlanetFromString(String source){
         double semiMajorAxis = 0;
         double eccentricity = 0;
         double inclination = 0;
@@ -67,7 +67,7 @@ public record Planet(
         double longitudeNode = 0;
         double meanAnomaly = 0;
         double time = 0;
-        return new Planet(
+        return new PlanetKeplerian(
                     semiMajorAxis,
                     eccentricity,
                     inclination,
@@ -77,7 +77,7 @@ public record Planet(
                     time);
     }
     
-    public static Planet creatPlanetFromFile(String fileName) throws IOException{
+    public static PlanetKeplerian creatPlanetFromFile(String fileName) throws IOException{
         String content = Files.readString(Paths.get(fileName));
         return createPlanetFromString(content);
     }

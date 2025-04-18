@@ -84,7 +84,7 @@ public class KeplerianCalculator {
      * @param planet The composing object of all needed Keplerian parameters
      * @return Position as a 3-element array [x, y, z] in m
      */
-    public double[] computePosition(Planet planet){
+    public double[] computePosition(PlanetKeplerian planet){
         return computePosition(
                 planet.semiMajorAxis(), 
                 planet.eccentricity(),
