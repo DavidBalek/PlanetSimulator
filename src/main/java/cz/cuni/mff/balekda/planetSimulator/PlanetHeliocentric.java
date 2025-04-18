@@ -92,6 +92,8 @@ public record PlanetHeliocentric(
 
     /**
      * String representation of heliocentric coordinates.
+     * 
+     * @return what it says it returns :)
      */
     @Override
     public String toString() {
