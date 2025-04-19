@@ -47,7 +47,7 @@ public class ArgumentParser {
     private double longitude;
     
     /** Optional output file name. */
-    private String file;
+    private final String file;
     
     private boolean isTimeAvailable = false;
     private boolean isBodyAvailable = false;
@@ -201,7 +201,7 @@ public class ArgumentParser {
      * @return the value as a string, or {@code null} if optional and not provided
      * @throws IllegalArgumentException if required and missing
      */
-    private static String getArg(Map<String, String> map, String longFlag, String shortFlag, boolean required) {
+    private String getArg(Map<String, String> map, String longFlag, String shortFlag, boolean required) {
         String value = map.getOrDefault(longFlag, map.get(shortFlag));
         if (value == null && required) {
             throw new IllegalArgumentException("Missing required argument: " + longFlag);

@@ -1,7 +1,6 @@
 package cz.cuni.mff.balekda.planetSimulator;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 /**
  *
