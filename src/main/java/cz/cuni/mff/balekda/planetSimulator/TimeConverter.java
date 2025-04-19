@@ -20,7 +20,7 @@ public class TimeConverter {
     // start of MJD_2000 epoch
     private static final Instant JD_2000 = Instant.parse("2000-01-01T12:00:00.00Z");
     // JD at MJD_2000 time 0
-    private static final double JD_2000_IN_JD = 2451545.0; 
+    public static final double JD_2000_IN_JD = 2451545.0; 
     private static final double SECONDS_PER_DAY = 86400.0;
 
     /**
@@ -40,6 +40,10 @@ public class TimeConverter {
         double totalDiff = diffSeconds + diffNanos / 1e9;
         return JD_2000_IN_JD + totalDiff / SECONDS_PER_DAY;
     }
+    
+    public static double getJ2000Epoch(){
+        return JD_2000_IN_JD;
+    }    
 
     /**
      * Converts a Julian Date to Instant (UTC).

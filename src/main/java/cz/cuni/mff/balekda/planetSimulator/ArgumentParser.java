@@ -121,7 +121,7 @@ public class ArgumentParser {
     }
     
     /**
-     * Parses the provided command-line arguments into a {@link ParsedArgs} object.
+     * Parses the provided command-line arguments.
      *
      * @param args the command-line arguments
      * @throws IllegalArgumentException if required arguments are missing or malformed

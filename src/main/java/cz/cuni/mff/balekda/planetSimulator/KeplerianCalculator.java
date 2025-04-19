@@ -27,7 +27,7 @@ public class KeplerianCalculator {
     private static double solveKeplersEquation(double M, double e) {
         double E = M + e*Math.sin(M);
         double epsilon = 1e-6;
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100_000; i++) {
             double deltaM = M - E + e * Math.sin(E);
             double deltaE = deltaM / (1 - e * Math.cos(E));
             if (Math.abs(deltaE) < epsilon) {
@@ -51,10 +51,12 @@ public class KeplerianCalculator {
      * @return Position as a 3-element array [x, y, z] in m
      * @see <a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">Approximate Positions of the Planets</a>
      */
-    public double[] computePosition(double a, double e, double i, double omega, double Omega, double MEpoch, double T) {
+    private static PlanetHeliocentric computePosition(double a, double e, double i, double omega, double Omega, double MEpoch, double T) {
         // Mean motion -- we have meanMotion = 2*PI / T, which from 3rd Kepler's law  is sqrt(GM/a^3)
         double meanMotion = Math.sqrt(SUN_GRAVITY / Math.pow(a, 3)); 
         double M = MEpoch + meanMotion * T;
+        M = M % (2 * Math.PI);
+        if (M < 0) M += 2 * Math.PI;
         
         // Solve Kepler's Equation for Eccentric Anomaly
         double E = solveKeplersEquation(M, e);
@@ -71,12 +73,12 @@ public class KeplerianCalculator {
 
         double x = (cosomega * cosOmega - sinomega * sinOmega * cosI) * xOrbital + 
                    (-sinomega * cosOmega - cosomega * sinOmega * cosI) * yOrbital;
-        double y = (cosomega * cosOmega + cosOmega * sinomega * cosI) * xOrbital + 
+        double y = (cosomega * sinOmega + sinomega * cosOmega * cosI) * xOrbital + 
                    (-sinomega * sinOmega + cosomega * cosOmega * cosI) * yOrbital;
         double z = (sinomega * sinI) * xOrbital + 
                    (cosomega * sinI) * yOrbital;
 
-        return new double[]{x, y, z};
+        return new PlanetHeliocentric(x, y, z);
     }
     
     /**
@@ -84,7 +86,7 @@ public class KeplerianCalculator {
      * @param planet The composing object of all needed Keplerian parameters
      * @return Position as a 3-element array [x, y, z] in m
      */
-    public double[] computePosition(PlanetKeplerian planet){
+    public static PlanetHeliocentric computePosition(PlanetKeplerian planet){
         return computePosition(
                 planet.semiMajorAxis(), 
                 planet.eccentricity(),

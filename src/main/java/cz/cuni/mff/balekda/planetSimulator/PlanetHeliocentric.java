@@ -42,7 +42,7 @@ public record PlanetHeliocentric(
      * @return Relative position vector.
      */
     private PlanetHeliocentric subtractFrom(PlanetHeliocentric other) {
-        return new PlanetHeliocentric(this.x - other.x, this.y - other.y, this.z - other.z);
+        return new PlanetHeliocentric(other.x - this.x , other.y - this.y, other.z - this.z);
     }
 
     /**
@@ -80,8 +80,21 @@ public record PlanetHeliocentric(
         // Convert to degrees
         dec = Math.toDegrees(dec);
 
-        return new PlanetRADec(RA, dec);
+        return new PlanetRADec(normalizeHours(RA), dec);
     }
+    
+    /**
+     * Normalizes time in hours to the range [0, 24).
+     *
+     * @param hours the angle in degrees
+     * @return the normalized time
+     */
+    private double normalizeHours(double hours){
+        hours = hours % 24.0;
+        if (hours < 0) hours += 24.0;
+        return hours;
+    }
+    
 
     /**
      * Returns a 3-element array [x, y, z].
@@ -97,6 +110,6 @@ public record PlanetHeliocentric(
      */
     @Override
     public String toString() {
-        return String.format("Heliocentric Coordinates: x=%.6f AU, y=%.6f AU, z=%.6f AU", x, y, z);
+        return String.format("Heliocentric Coordinates: x=%.6f m, y=%.6f m, z=%.6f m", x, y, z);
     }
 }

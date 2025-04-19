@@ -58,7 +58,7 @@ public record PlanetRADec(
         double LST = localSiderealTime(time, longitude);
         
         // Hour Angle (angle of a body from local meridian) in degrees 
-        double HA = LST - RA * 15; 
+        double HA = LST - RA * 15.0; 
         if (HA < -180) HA += 360;
         if (HA > 180) HA -= 360;
 
@@ -68,56 +68,13 @@ public record PlanetRADec(
 
         double sinAlt = Math.sin(decRad) * Math.sin(latRad) + Math.cos(decRad) * Math.cos(latRad) * Math.cos(haRad);
         double altitude = Math.toDegrees(Math.asin(sinAlt));
-        double numAz = - Math.sin(HA);
-        double denomAz = Math.tan(decRad) * Math.cos(latRad) - Math.sin(latRad) * Math.cos(HA);
-        double azimuth = Math.atan2(numAz, denomAz);
-        azimuth = Math.toDegrees(azimuth);
+        double numAz = - Math.sin(haRad);
+        double denomAz = Math.tan(decRad) * Math.cos(latRad) - Math.sin(latRad) * Math.cos(haRad);
+        double azimuth =  Math.toDegrees(Math.atan2(numAz, denomAz)); 
 
-        return new double[] { altitude, azimuth };
+        return new double[] { altitude, normalizeDegrees(azimuth) };
     }
-
-    /**
-     * Estimates UTC sunrise and sunset times for the current declination and given observer position.
-     *
-     * @param date Date of observation (UTC).
-     * @param latitude Observer's latitude in degrees.
-     * @param longitude Observer's longitude in degrees (East positive).
-     * @return Array of two Instant values: [sunrise, sunset] in UTC, 
-     * [null, null] in case the object is always above / below horizon throughout the day.
-     */
-    public Instant[] estimateSunriseSunset(Instant date, double latitude, double longitude) {
-        double decRad = Math.toRadians(declination);
-        double latRad = Math.toRadians(latitude);
-
-        // Solar elevation at sunrise/sunset is -0.833 degrees (standard atmospheric refraction)
-        double h0 = Math.toRadians(-0.833);
-        double cosH = (Math.sin(h0) - Math.sin(latRad) * Math.sin(decRad)) /
-                      (Math.cos(latRad) * Math.cos(decRad));
-
-        if (cosH < -1 || cosH > 1) {
-            // Sun is either always above or below the horizon
-            return new Instant[] { null, null };
-        }
-
-        double H = Math.toDegrees(Math.acos(cosH)); // hour angle in degrees
-        double RA_deg = RA * 15; // Convert RA from hours to degrees
-
-        // Estimate solar transit (local noon) in hours
-        double solarNoonHours = ((RA_deg - longitude + 360) % 360) / 15.0;
-
-        // Truncate date to UTC midnight
-        Instant base = date.truncatedTo(ChronoUnit.DAYS);
-        Instant solarNoon = base.plusSeconds((long)(solarNoonHours * 3600));
-
-        // Time from noon to rise/set in hours
-        double deltaT = H / 15.0;
-
-        Instant sunrise = solarNoon.minusSeconds((long)(deltaT * 3600));
-        Instant sunset = solarNoon.plusSeconds((long)(deltaT * 3600));
-
-        return new Instant[] { sunrise, sunset };
-    }
-
+    
     /**
      * Computes the Local Sidereal Time (LST) in degrees for a given UTC time and longitude.
      * Based on approximate formula valid for modern dates.
@@ -135,6 +92,89 @@ public record PlanetRADec(
         double LST = ERA + longitude;
 
         return normalizeDegrees(LST);
+    }
+    
+    /**
+     * Estimates UTC rise and set times for the current declination and given observer position.
+     *
+     * @param date Date of observation (UTC).
+     * @param latitude Observer's latitude in degrees.
+     * @return Array of two Instant values: [rise, set, transit] in local solar time, NOT UTC, 
+     * [null, null, null] in case the object is always above / below horizon throughout the day.
+     */
+    public double[] estimateRiseSetTimes(Instant date, double latitude) {
+        double decRad = Math.toRadians(declination);
+        double latRad = Math.toRadians(latitude);
+
+        // Planet elevation at rise/set is -0.833 degrees (standard atmospheric refraction)
+        double h0 = Math.toRadians(-0.833);
+        double cosH = (Math.sin(h0) - Math.sin(latRad) * Math.sin(decRad)) /
+                      (Math.cos(latRad) * Math.cos(decRad));
+
+        if (cosH < -1 || cosH > 1) {
+            // Planet is either always above or below the horizon
+            return new double[] { 0,0,0 };
+        }
+
+        double H = Math.toDegrees(Math.acos(cosH)); // hour angle in degrees
+        double planetRA_deg = RA * 15; // Convert RA from hours to degrees
+
+        // Estimate planet transit (local noon) in hours
+        double sunRA_deg = approximateSunRA(TimeConverter.toJulianDate(date)); // degrees
+        
+        double transit = 12.0 - (sunRA_deg - planetRA_deg) / 15.0;
+
+        // Time from noon to rise/set in hours
+        double deltaT = H / 15.0;
+
+        double rise = transit - deltaT;
+        double set = transit + deltaT;
+        
+        
+
+        return new double[] { normalizeHours(rise), normalizeHours(set), normalizeHours(transit) };
+    }
+
+    
+    /**
+    * Approximates the Right Ascension (RA) of the Sun for a given Julian Date.
+    * 
+    * This method uses a simplified solar position model based on the Earth's orbital elements 
+    * and provides sufficient accuracy for rise/set and transit time calculations in most applications.
+    * 
+    * The result is given in degrees in the equatorial coordinate system (RA), assuming mean obliquity.
+    * 
+    * @param julianDate Julian Date (e.g., from J2000.0 epoch: JD = 2451545.0)
+    * @return Approximate Right Ascension of the Sun in degrees [0, 360)
+    * 
+    * @see <a href="https://en.wikipedia.org/wiki/Position_of_the_Sun">Wikipedia: Position of the Sun</a>
+    * @see <a href="https://aa.usno.navy.mil/faq/sun_approx>Solar coordinates</a>
+    */
+    private double approximateSunRA(double julianDate) {
+        // days since J2000
+        double D = julianDate - TimeConverter.JD_2000_IN_JD;
+        // mean anomaly of the Sun
+        double g = Math.toRadians((357.529 + 0.98560028 * D) % 360);
+        // Geocentric apparent ecliptic longitude of the Sun (adjusted for aberration):
+        double lambda = Math.toRadians((280.459 + 0.98564736 * D + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) % 360); // ecliptic longitude
+
+        // obliquity of ecliptic
+        double epsilon = Math.toRadians(23.439 - 0.00000036 * D); 
+        double sunRA = Math.atan2(Math.cos(epsilon) * Math.sin(lambda), Math.cos(lambda));
+        if (sunRA < 0) sunRA += 2 * Math.PI;
+        return Math.toDegrees(sunRA);
+    }
+    
+    /**
+     * Normalizes time in hours to the range [0, 24).
+     *
+     * @param hours the angle in degrees
+     * @return the normalized time
+     */
+    private double normalizeHours(double hours){
+        hours = hours % 24.0;
+        if (hours < 0) hours += 24.0;
+        return hours;
     }
     
     
