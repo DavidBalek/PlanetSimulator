@@ -32,12 +32,8 @@
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
-                        <configuration>
-                            <encoding>UTF-8</encoding>
-                            <doclet>standard</doclet> 
+                        <configuration> 
                             <overview>${basedir}/overview.html</overview>
-                            <destinationDirectory>${project.build.directory}/apidocs</destinationDirectory>
-                            <source>${maven.compiler.source}</source>
                         </configuration>
                     </execution>
                 </executions>
