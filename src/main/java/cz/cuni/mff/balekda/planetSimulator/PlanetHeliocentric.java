@@ -1,9 +1,5 @@
 package cz.cuni.mff.balekda.planetSimulator;
 
-/**
- *
- * @author David Balek
- */
 
 /**
  * Represents a heliocentric position vector (x, y, z) of a celestial body in the Solar System.
@@ -49,7 +45,8 @@ public record PlanetHeliocentric(
      * Converts the heliocentric position of PlanetHeliocentric other
      * to equatorial coordinates of this object (presumably Earth):
      * Right Ascension (RA) and Declination (Dec).
-     *
+     * @param other The reference planet whose heliocentric coordinates are used
+     * to calculate relative position.
      * @return A PlanetRADec object with RA in hours and Dec in degrees.
      */
     public PlanetRADec toRADec(PlanetHeliocentric other) {
@@ -71,13 +68,8 @@ public record PlanetHeliocentric(
         double RA = Math.atan2(ye, xe);
         // Normalizzation to [0, 2 PI)
         if (RA < 0) RA += 2 * Math.PI;
-        
-        // Convert to hours
         RA = Math.toDegrees(RA) / 15.0;
-        
-        // Declination in radians
         double dec = Math.asin(ze / r);
-        // Convert to degrees
         dec = Math.toDegrees(dec);
 
         return new PlanetRADec(normalizeHours(RA), dec);
@@ -98,6 +90,8 @@ public record PlanetHeliocentric(
 
     /**
      * Returns a 3-element array [x, y, z].
+     * 
+     * @return A double array of size 3 representing the [x, y, z] heliocentric coordinates.
      */
     public double[] toArray() {
         return new double[] { x, y, z };

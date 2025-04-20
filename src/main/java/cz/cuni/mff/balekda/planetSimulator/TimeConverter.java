@@ -16,10 +16,17 @@ import java.time.Instant;
  * 
  */
 public class TimeConverter {
+    /**
+     * Default constructor for the TimeConverter class.
+     * Initializes the class with the default behavior.
+     */
+    public TimeConverter() {}
     
     // start of MJD_2000 epoch
     private static final Instant JD_2000 = Instant.parse("2000-01-01T12:00:00.00Z");
-    // JD at MJD_2000 time 0
+    /**
+     * Julian Date corresponding to the J2000.0 epoch (January 1, 2000, 12:00 TT).
+     */
     public static final double JD_2000_IN_JD = 2451545.0; 
     private static final double SECONDS_PER_DAY = 86400.0;
 
@@ -40,7 +47,11 @@ public class TimeConverter {
         double totalDiff = diffSeconds + diffNanos / 1e9;
         return JD_2000_IN_JD + totalDiff / SECONDS_PER_DAY;
     }
-    
+    /**
+     * Returns the Julian Date of the J2000.0 epoch.
+     *
+     * @return Julian Date of J2000.0 (2451545.0).
+     */
     public static double getJ2000Epoch(){
         return JD_2000_IN_JD;
     }    

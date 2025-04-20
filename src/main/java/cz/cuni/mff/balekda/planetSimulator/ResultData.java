@@ -10,8 +10,8 @@ import java.time.Instant;
  * Represents the core logic for computing and formatting planetary ephemeris data
  * based on user input, using the JPL Horizons API and Keplerian orbital mechanics.
  *
- * <p>This class supports outputting RA, Dec, distance to Sun, azimuth, altitude,
- * rise/set/transit times based on provided coordinates and time.</p>
+ * This class supports outputting RA, Dec, distance to Sun, azimuth, altitude,
+ * rise/set/transit times based on provided coordinates and time.
  *
  * @author David Balek
  */

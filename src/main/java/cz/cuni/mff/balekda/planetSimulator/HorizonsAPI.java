@@ -9,20 +9,24 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-/**
- *
- * @author David Balek
- */
-
 
 /**
  * A utility class to retrieve planetary ephemeris and orbital element data
  * from NASA JPL's Horizons API using the 'ELEMENTS' ephemeris type.
  *
- * <p>This class constructs properly encoded API requests and retrieves
+ * This class constructs properly encoded API requests and retrieves
  * the raw response for a given solar system object.
+ * 
+ * @author David Balek
  */
 public class HorizonsAPI {
+    
+    /**
+     * Creates a new instance of the {@code HorizonsAPI} class.
+     * This class provides methods to query the NASA JPL Horizons API
+     * for Keplerian orbital elements of solar system bodies.
+     */
+    public HorizonsAPI() {}
     
     /**
      * Constructs the full URI for a Horizons API request to fetch orbital elements

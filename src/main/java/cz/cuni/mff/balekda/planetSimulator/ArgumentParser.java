@@ -9,11 +9,6 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author David Balek
- */
-
 
 /**
  * Parses command-line flags for a celestial body tracking or simulation program.
@@ -30,6 +25,8 @@ import java.util.Map;
  *     <li>{@code --file} or {@code -f} — Output file name</li>
  *     <li>{@code --help} — Displays usage info</li>
  * </ul>
+ * 
+ * @author David Balek
  */
 public class ArgumentParser {
 
@@ -56,6 +53,8 @@ public class ArgumentParser {
     private boolean isFileAvailable = false;
     
     /**
+     * Returns whether the time argument was provided.
+     *
      * @return true if the time argument is available, false otherwise.
      */
     public boolean isTimeAvailable() {
@@ -63,6 +62,8 @@ public class ArgumentParser {
     }
 
     /**
+     * Returns whether the body argument was provided.
+     *
      * @return true if the body argument is available, false otherwise.
      */
     public boolean isBodyAvailable() {
@@ -70,6 +71,8 @@ public class ArgumentParser {
     }
 
     /**
+     * Returns whether the latitude argument was provided.
+     *
      * @return true if the latitude argument is available, false otherwise.
      */
     public boolean isLatitudeAvailable() {
@@ -77,6 +80,8 @@ public class ArgumentParser {
     }
 
     /**
+     * Returns whether the longitude argument was provided.
+     *
      * @return true if the longitude argument is available, false otherwise.
      */
     public boolean isLongitudeAvailable() {
@@ -84,6 +89,8 @@ public class ArgumentParser {
     }
 
     /**
+     * Returns whether the file output argument was provided.
+     *
      * @return true if the file argument is available, false otherwise.
      */
     public boolean isFileAvailable() {

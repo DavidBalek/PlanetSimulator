@@ -2,11 +2,6 @@ package cz.cuni.mff.balekda.planetSimulator;
 
 import java.time.Instant;
 
-/**
- *
- * @author David Balek
- */
-
 
 /**
  * Represents the geocentric equatorial coordinates of a celestial object.
@@ -17,7 +12,7 @@ import java.time.Instant;
  *
  * @param RA Right Ascension (hours), range: [0, 24). This is the celestial equivalent of longitude.
  * @param declination Declination (degrees), range: [-90, +90]. This is the celestial equivalent of latitude.
- *
+ * @author David Balek
  */
 public record PlanetRADec(
     double RA,
@@ -115,11 +110,11 @@ public record PlanetRADec(
             return new double[] { 0,0,0 };
         }
 
-        double H = Math.toDegrees(Math.acos(cosH)); // hour angle in degrees
-        double planetRA_deg = RA * 15; // Convert RA from hours to degrees
+        double H = Math.toDegrees(Math.acos(cosH));
+        double planetRA_deg = RA * 15;
 
         // Estimate planet transit (local noon) in hours
-        double sunRA_deg = approximateSunRA(TimeConverter.toJulianDate(date)); // degrees
+        double sunRA_deg = approximateSunRA(TimeConverter.toJulianDate(date));
         
         double transit = 12.0 - (sunRA_deg - planetRA_deg) / 15.0;
 
@@ -127,9 +122,7 @@ public record PlanetRADec(
         double deltaT = H / 15.0;
 
         double rise = transit - deltaT;
-        double set = transit + deltaT;
-        
-        
+        double set = transit + deltaT;   
 
         return new double[] { normalizeHours(rise), normalizeHours(set), normalizeHours(transit) };
     }

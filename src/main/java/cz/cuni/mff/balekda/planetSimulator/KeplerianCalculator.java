@@ -1,15 +1,19 @@
 package cz.cuni.mff.balekda.planetSimulator;
 
 /**
+ * A simulator for computing the position of a celestial body in orbit around the Sun
+ * using Keplerian orbital elements and Kepler's laws.
  * 
  * @author David Balek
  */
-
-/**
- * A simulator for computing the position of a celestial body in orbit around the Sun
- * using Keplerian orbital elements and Kepler's laws.
- */
 public class KeplerianCalculator {
+    
+    /**
+     * Constructs a new {@code KeplerianCalculator}.
+     * Initializes the calculator for use in orbital computations.
+     */
+    public KeplerianCalculator() {}
+    
     /** 
      * Gravitational parameter of the Sun (GM) in m^3/s^2 
      *  @see <a href="https://iau-a3.gitlab.io/NSFA/NSFA_cbe.html#GMS2012">IAU</a>
