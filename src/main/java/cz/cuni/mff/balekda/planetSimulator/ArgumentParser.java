@@ -38,7 +38,7 @@ public class ArgumentParser {
     private Instant time;
     
     /** Integer ID of the celestial body. */
-    private int body;
+    private String body;
     
     /** Optional latitude in degrees. */
     private double latitude;
@@ -54,6 +54,41 @@ public class ArgumentParser {
     private boolean isLatitudeAvailable = false;
     private boolean isLongitudeAvailable = false;
     private boolean isFileAvailable = false;
+    
+    /**
+     * @return true if the time argument is available, false otherwise.
+     */
+    public boolean isTimeAvailable() {
+        return isTimeAvailable;
+    }
+
+    /**
+     * @return true if the body argument is available, false otherwise.
+     */
+    public boolean isBodyAvailable() {
+        return isBodyAvailable;
+    }
+
+    /**
+     * @return true if the latitude argument is available, false otherwise.
+     */
+    public boolean isLatitudeAvailable() {
+        return isLatitudeAvailable;
+    }
+
+    /**
+     * @return true if the longitude argument is available, false otherwise.
+     */
+    public boolean isLongitudeAvailable() {
+        return isLongitudeAvailable;
+    }
+
+    /**
+     * @return true if the file argument is available, false otherwise.
+     */
+    public boolean isFileAvailable() {
+        return isFileAvailable;
+    }
 
     /**
      * Gets the UTC date/time as an {@link Instant}.
@@ -74,7 +109,7 @@ public class ArgumentParser {
      * @return the integer body ID.
      * @throws IllegalStateException if the body has not been initialized
      */
-    public int getBody() {
+    public String getBody() {
         if (!isBodyAvailable){
             throw new IllegalStateException("ID of cellestial body has not been initialized.");
         }
@@ -138,7 +173,7 @@ public class ArgumentParser {
             }
 
             if (arg.startsWith("-")) {
-                if (i + 1 >= args.length || args[i + 1].startsWith("-")) {
+                if (i + 1 >= args.length) {
                     throw new IllegalArgumentException("Missing value for " + arg);
                 }
                 argMap.put(arg, args[++i]);
@@ -159,7 +194,7 @@ public class ArgumentParser {
         // Parse --body or -b
         String bodyStr = getArg(argMap, "--body", "-b", true);
         try {
-            body = Integer.parseInt(bodyStr);
+            body = bodyStr;
             isBodyAvailable = true;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid integer for body: " + bodyStr);
