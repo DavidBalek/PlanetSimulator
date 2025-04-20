@@ -26,12 +26,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.0</version> 
+                <version>3.10.0</version> 
                 <executions>
                     <execution>
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <doclet>standard</doclet> 
+                            <overview>${basedir}/overview.html</overview>
+                            <destinationDirectory>${project.build.directory}/apidocs</destinationDirectory>
+                            <source>${maven.compiler.source}</source>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -43,7 +50,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <goals>
