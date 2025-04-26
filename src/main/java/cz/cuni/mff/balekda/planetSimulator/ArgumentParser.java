@@ -229,8 +229,9 @@ public class ArgumentParser {
 
         // Parse optional --file or -f
         file = getArg(argMap, "--file", "-f", false);
-        isFileAvailable = true;
-
+        if (file != null){
+            isFileAvailable = true;
+        }
     }
 
     /**
