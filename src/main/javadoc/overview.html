@@ -4,5 +4,24 @@
   <body>
     <h1>Planet Simulator API</h1>
     <p>This API simulates planetary motion and provides astronomical coordinate transformations.</p>
+    <p>The architecture is divided into several key components:</p>
+
+    <ul>
+      <li><b>PlanetKeplerian</b> — Represents a celestial body using its Keplerian orbital elements (semi-major axis, eccentricity, etc.).</li>
+      <li><b>PlanetHeliocentric</b> — Represents a planet's Cartesian position in the heliocentric coordinate system at a given time.</li>
+      <li><b>PlanetRADec</b> — Represents the position of a body in the sky, using Right Ascension and Declination coordinates.</li>
+      <li><b>KeplerianCalculator</b> — Handles the core orbital mechanics: propagating orbits forward in time based on Kepler's laws.</li>
+      <li><b>HorizonsAPI</b> — Communicates with the NASA Horizons service to retrieve ephemeris.</li>
+      <li><b>TimeConverter</b> — Provides utility functions to convert between time formats (e.g., Julian Date, J2000 epoch).</li>
+      <li><b>ArgumentParser</b> — Parses user input when running the simulation from the command line.</li>
+      <li><b>PlanetSimulator</b> — The class where the main is.</li>
+      <li><b>ResultData</b> - The class that orchestrates all the previously mentioned functionality - reading input, performing calculations, and displaying results.</li>
+    </ul>
+    <p>
+      The simulation typically follows this flow: user input is parsed.Then data from Horizons API data are loaded.
+      KeplerianCalculator propagates the body's position to the desired time,
+      the position is converted to heliocentric Cartesian coordinates (PlanetHeliocentric),
+      and then further projected into sky coordinates (PlanetRADec) for observation.
+    </p>
   </body>
 </html>

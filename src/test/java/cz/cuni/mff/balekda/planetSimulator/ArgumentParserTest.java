@@ -74,4 +74,32 @@ public class ArgumentParserTest {
             assertTrue(ex.getMessage().contains("Latitude must be between -90 and 90"));
         }
     }
+    
+    /**
+     * Tests that the parser knows that all arguments were provided 
+     */
+    @Test
+    public void testProvidedArgument() {
+        String[] args = {"--time", "2025-04-18T10:00:00Z", "--body", "499", "--latitude", "45.0", "--longitude", "45.0", "--file", "a.txt"};
+        ArgumentParser parser = new ArgumentParser(args);
+        assertTrue(parser.isTimeAvailable());
+        assertTrue(parser.isBodyAvailable());
+        assertTrue(parser.isLatitudeAvailable());
+        assertTrue(parser.isLongitudeAvailable());
+        assertTrue(parser.isFileAvailable());
+    }
+    
+    /**
+     * Tests that the parser knows that only the mandatory arguments were provided
+     */
+    @Test
+    public void testMissingArgument() {
+        String[] args = {"--time", "2025-04-18T10:00:00Z", "--body", "499"};
+        ArgumentParser parser = new ArgumentParser(args);
+        assertTrue(parser.isTimeAvailable());
+        assertTrue(parser.isBodyAvailable());
+        assertFalse(parser.isLatitudeAvailable());
+        assertFalse(parser.isLongitudeAvailable());
+        assertFalse(parser.isFileAvailable());
+    }
 }
